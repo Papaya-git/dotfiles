@@ -1,0 +1,17 @@
+#!/bin/bash
+# Installs the packages listed in ~/.Brewfile. chezmoi only runs this script again when its
+# content changes: the hash below changes with the Brewfile.
+# Brewfile: {{ include "dot_Brewfile" | sha256sum }}
+set -euo pipefail
+
+if ! command -v brew >/dev/null 2>&1; then
+    echo "Homebrew is missing: install it (https://brew.sh), then run 'chezmoi apply' again." >&2
+    exit 1
+fi
+
+# reef comes from a third-party tap: Homebrew refuses to load it until it is trusted.
+brew tap zstud/reef
+brew trust zstud/reef
+
+# Install what is missing without upgrading the rest (upgrades stay an explicit step).
+brew bundle --global --no-upgrade

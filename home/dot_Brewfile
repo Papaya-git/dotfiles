@@ -1,0 +1,30 @@
+# Shell packages, installed by `brew bundle --global` (reads ~/.Brewfile).
+# Run automatically by chezmoi whenever this file changes (run_onchange_after_brew-bundle.sh.tmpl).
+
+# Shell and prompt
+brew "fish"
+brew "starship"
+
+# Interactive tools wired into fish
+brew "zoxide"   # smart cd
+brew "fzf"      # Ctrl+R, Ctrl+T, Alt+C, Shift+Down
+brew "eza"      # ls, ll, la, tree
+brew "bat"      # cat, Ctrl+R preview
+brew "ripgrep"  # grep
+brew "dust"     # du
+brew "duf"      # df
+
+# Tool versions through shims (~/.local/share/mise/shims on PATH)
+brew "mise"
+
+# Bash commands pasted into fish (third-party tap, trusted by `brew trust` in the script)
+tap "zstud/reef"
+brew "zstud/reef/reef"
+
+# This repository
+brew "chezmoi"
+
+if OS.mac?
+  cask "iterm2"
+  cask "font-fira-code-nerd-font" # prompt icons ("fish" iTerm profile)
+end

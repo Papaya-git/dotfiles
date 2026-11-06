@@ -1,0 +1,84 @@
+# Starship prompt, modelled on powerlevel10k classic (2 lines, Nerd Font icons).
+# Line 1: os, directory, git  ...  status, duration, jobs, cloud contexts, time
+# Line 2: input character
+# Everything fits in a single starship call (no right_format: +9 ms per prompt).
+
+add_newline = true
+format = """
+$os$directory$git_branch$git_state$git_status\
+$fill\
+$status$cmd_duration$jobs$gcloud$kubernetes$aws$terraform$python$time
+$character"""
+
+[fill]
+symbol = " "
+
+[os]
+disabled = false
+format = "[$symbol]($style)"
+style = "bold white"
+
+[os.symbols]
+Macos = " "
+
+[directory]
+truncation_length = 4
+truncate_to_repo = false
+read_only = " \U000f033e"
+style = "bold cyan"
+
+[git_branch]
+symbol = " "
+format = "[$symbol$branch(:$remote_branch)]($style) "
+
+[git_status]
+format = "([$all_status$ahead_behind]($style) )"
+# The git binary (direct, see conf.d/00-env.fish) is much faster than Starship's built-in
+# library here: 29 ms vs 50 ms for the whole prompt (measured on a mid-sized repo).
+use_git_executable = true
+
+[status]
+disabled = false
+format = "[✘ $status]($style) "
+
+# Duration shown above 3 s, without decimals (like p10k)
+[cmd_duration]
+min_time = 3000
+show_milliseconds = false
+format = "[took $duration]($style) "
+
+[jobs]
+format = "[$symbol$number]($style) "
+
+# gcloud: project only
+[gcloud]
+symbol = "\U000f11f6 "
+format = "[$symbol$project]($style) "
+
+[kubernetes]
+disabled = false
+symbol = "\U000f10fe "
+
+[aws]
+symbol = " "
+
+[terraform]
+symbol = " "
+format = "[$symbol$workspace]($style) "
+
+# Python: only when a virtual environment is active (like p10k's virtualenv segment)
+[python]
+symbol = " "
+detect_extensions = []
+detect_files = []
+format = "[$symbol$virtualenv]($style) "
+
+[time]
+disabled = false
+time_format = "%H:%M:%S"
+format = "[$time]($style)"
+style = "dimmed white"
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"

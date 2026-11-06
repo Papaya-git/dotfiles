@@ -1,242 +1,59 @@
-# Custom ZSH Dotfiles
+# dotfiles
 
-A lightweight, high-performance ZSH configuration with speed, transparency, and maintainability in mind.
+Shell configuration managed with [chezmoi](https://www.chezmoi.io/): fish + Starship, with the
+tools wired into them, installed from a Brewfile.
 
-## ✨ Features
+## Set up a new machine
 
-- **🚀 Fast startup** (~50-100ms)
-- **⭐ Starship prompt** - Modern, actively maintained, easy TOML configuration
-- **🔍 Enhanced commands** - bat, eza, ripgrep, zoxide, LazyVim
-- **🎯 Smart completion** - Auto-suggestions, syntax highlighting, fuzzy search
-- **🌐 Cross-platform** - Works on macOS, Linux, WSL2, Windows
-- **📦 No package manager** - Direct git clones for transparency
-- **🛠️ Future-proof** - Detects 20+ languages and DevOps tools
+1. Install [Homebrew](https://brew.sh).
+2. Add an SSH key for this GitHub account (alias `github.com-perso` in `~/.ssh/config`).
+3. Clone and apply:
 
-## 🎯 What You Get
+   ```sh
+   brew install chezmoi
+   git clone git@github.com-perso:Papaya-git/dotfiles.git ~/Documents/git/github/perso/dotfiles
+   mkdir -p ~/.config/chezmoi
+   echo "sourceDir = \"$HOME/Documents/git/github/perso/dotfiles\"" > ~/.config/chezmoi/chezmoi.toml
+   chezmoi diff     # preview the changes
+   chezmoi apply    # write the files, then install the Brewfile
+   ```
 
-### Prompt & Shell
-- **Starship** - 2-line prompt with comprehensive git status
-- **Auto-suggestions** - Gray completions based on history
-- **Syntax highlighting** - Real-time command coloring
-- **History search** - Up/Down arrows for substring search
-- **Directory bookmarks** - Save and jump to frequent locations
+4. macOS: in iTerm, *Settings > Profiles*, make the **fish** profile the default one.
+   VS Code and Antigravity: add a fish terminal profile (`/opt/homebrew/bin/fish --login`) and
+   set `terminal.integrated.macOptionIsMeta: true`.
 
-### Enhanced Commands
-| Old Command | New Command | Description |
-|-------------|-------------|-------------|
-| `cat` | `bat` | Syntax highlighting, line numbers |
-| `ls` | `eza` | Icons, git status, smart parameters |
-| `vim` | `nvim` | Neovim with LazyVim configuration |
-| `grep` | `rgrep` (ripgrep) | 10x faster text searching |
-| `find` | `fd` | Faster, user-friendly file finder |
-| `cd` | `z` (zoxide) | Smart directory jumping |
+The login shell stays the system default: tools and agents expect a POSIX shell there.
+fish only runs where you type (iTerm, the editor's terminal).
 
-### Tool Detection
-Automatically shows versions/status for:
-- **Languages**: Python, Node.js, Go, Rust, Java, .NET, PHP, Ruby, Lua, Scala, Swift, Kotlin, Dart, Elixir, Haskell, Julia, Perl, Zig
-- **DevOps**: Docker, Kubernetes, Helm, Terraform, Vagrant, Nix, Pulumi
-- **Platform**: ArgoCD, Flux, Istio, Kustomize, Tekton, Crossplane
-- **Cloud**: AWS, GCP, Azure, OpenStack
+## Day to day
 
-## 🚀 Quick Start
+| Need | Command |
+|---|---|
+| Edit a managed file | `chezmoi edit <path>`, then `chezmoi apply` |
+| Take back a change made in place | `chezmoi re-add <path>` |
+| Manage a new file | `chezmoi add <path>` |
+| See the differences | `chezmoi diff` |
+| Pull changes made on another machine | `chezmoi update` |
+| Commit and push | `chezmoi cd`, then git |
 
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+## Contents
 
-# Make scripts executable
-chmod +x install.sh scripts/*.sh
+| File | Purpose |
+|---|---|
+| `~/.config/fish/conf.d/` | environment, tools (zoxide, fzf, Starship), reef, abbreviations, key bindings |
+| `~/.config/fish/functions/`, `completions/` | custom functions, one per file |
+| `~/.config/starship.toml` | prompt |
+| `~/.Brewfile` | packages, installed by `brew bundle --global --no-upgrade` whenever it changes |
+| `~/.local/share/fish-git/bin/git` | macOS: link to the CommandLineTools git (twice as fast as `/usr/bin/git`) |
+| `~/Library/…/DynamicProfiles/fish.json` | macOS: iTerm profile (Option sends Alt, Nerd Font) |
 
-# Run installation
-./install.sh
-```
+Deliberately left out: `~/.config/fish/config.fish` (installers append their own lines there;
+machine-specific settings go there too), `fish_variables` (machine state), shell history,
+`~/.ssh` and git identities.
 
-## 📁 Repository Structure
+## Linux
 
-```
-dotfiles/
-├── README.md                 # This file
-├── install.sh               # Main installation script
-├── zsh/
-│   └── .zshrc              # ZSH configuration
-├── starship/
-│   └── starship.toml       # Starship prompt configuration
-└── scripts/
-    ├── setup-tools.sh      # External tools installation
-    └── setup-lazyvim.sh    # LazyVim setup
-```
-
-## 🛠️ Installation Details
-
-### Automatic Installation
-- **Nerd Font** - FiraCode automatically installed
-- **Starship** - Fast, cross-shell prompt
-- **ZSH Plugins** - Auto-suggestions, syntax highlighting, history search
-- **External Tools** - bat, eza, ripgrep, fd, fzf, zoxide
-- **LazyVim** - Professional Neovim setup
-
-### Supported Platforms
-- **macOS** - via Homebrew
-- **Linux** - Ubuntu, Debian, Arch, Fedora, openSUSE
-- **WSL2** - Windows Subsystem for Linux
-- **Windows** - PowerShell/winget instructions
-
-## 🎮 Usage Examples
-
-### Directory Navigation
-```bash
-# Traditional
-cd ~/projects/my-app
-
-# Smart jumping (after visiting once)
-z my-app
-
-# Bookmarks
-bookmark save work        # Save current directory
-bookmark go work          # Jump to saved directory
-bookmark list             # List all bookmarks
-j projects               # Zoxide fuzzy matching
-```
-
-### Kubernetes Workflow
-```bash
-k get pods               # kubectl with completion
-k describe pod my-pod    # Describe resources
-k logs -f my-pod         # Follow logs
-k exec -it my-pod -- bash   # Execute into containers
-```
-
-### Enhanced File Operations
-```bash
-ls                       # eza with icons and git status
-ll                       # Detailed list with git info
-lt                       # Sort by modification time
-tree                     # Directory tree view
-cat file.py             # Syntax highlighted viewing
-rgrep "function"        # Fast text search
-```
-
-### Fuzzy Search
-```bash
-Ctrl+R                  # Search command history
-Ctrl+T                  # Search files
-vim **<Tab>             # File completion with fzf
-```
-
-## ⚙️ Customization
-
-### Starship Prompt
-Edit `~/.config/starship.toml` to customize your prompt:
-
-```toml
-[directory]
-style = "blue bold"
-
-[git_branch]
-symbol = " "
-
-[character]
-success_symbol = "[❯](green)"
-error_symbol = "[❯](red)"
-```
-
-### Local Customizations
-Create `~/.zshrc.local` for machine-specific settings that won't be tracked in git:
-
-```bash
-# Machine-specific aliases
-alias deploy='kubectl apply -f k8s/'
-
-# Environment variables
-export KUBECONFIG=~/.kube/config
-
-# Custom functions
-work() { z ~/work/"$1" }
-```
-
-### Adding Tools
-To add detection for new tools, edit `starship/starship.toml`:
-
-```toml
-[custom.mytool]
-command = "mytool --version"
-when = "command -v mytool"
-symbol = "🔧 "
-style = "bold blue"
-format = "[$symbol($output )]($style)"
-```
-
-## 🔧 Troubleshooting
-
-### Font Issues
-If icons don't display correctly:
-1. Ensure FiraCode Nerd Font is installed
-2. Configure your terminal to use the font
-3. Restart your terminal
-
-### Slow Performance
-If the shell feels slow:
-1. Check which plugins are loaded: `zsh -xvs`
-2. Remove unnecessary modules from `starship.toml`
-3. Clear completion cache: `rm ~/.zcompdump*`
-
-### Missing Tools
-If commands aren't found:
-1. Re-run: `./scripts/setup-tools.sh`
-2. Check your PATH: `echo $PATH`
-3. Manually install missing tools
-
-## 🔄 Updates
-
-### Update All Tools
-```bash
-cd ~/dotfiles
-
-# Update ZSH plugins
-git -C ~/.zsh-plugins/zsh-autosuggestions pull
-git -C ~/.zsh-plugins/zsh-syntax-highlighting pull
-git -C ~/.zsh-plugins/zsh-history-substring-search pull
-
-# Update external tools (depends on your package manager)
-brew upgrade              # macOS
-sudo apt update && sudo apt upgrade  # Ubuntu/Debian
-sudo pacman -Syu         # Arch
-```
-
-### Update Starship
-```bash
-# Most systems
-starship init zsh --print-full-init > /dev/null
-
-# Or reinstall
-curl -sS https://starship.rs/install.sh | sh
-```
-
-## 📝 Migration from zsh4humans
-
-### Backup First
-The install script automatically backs up your current configuration to:
-`~/.dotfiles-backup-YYYYMMDD-HHMMSS/`
-
-### Prompt Migration
-My previous powerlevel10k prompt style is replicated in `starship.toml` with:
-- Same 2-line layout
-- Comprehensive git status
-- Tool detection
-- Modern color scheme
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
-## 🙏 Acknowledgments
-
-- [Starship](https://starship.rs/) - The fast, cross-shell prompt
-- [LazyVim](https://lazyvim.org/) - Professional Neovim configuration
-- [zsh4humans](https://github.com/romkatv/zsh4humans) - Inspiration for this setup
-- All the amazing tool creators: bat, eza, ripgrep, fzf, zoxide
-
----
-
-**Enjoy your blazing-fast, transparent, and maintainable ZSH setup! 🚀**
+The fish files look for Homebrew under `/opt/homebrew` or `/home/linuxbrew/.linuxbrew`.
+The iTerm profile and the git link are not written outside macOS (`.chezmoiignore`).
+Without Homebrew (apt or dnf packages), the init cache cannot see version changes:
+run `fish-init-refresh` after upgrading zoxide, fzf or Starship.
