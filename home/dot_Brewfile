@@ -7,7 +7,8 @@ brew "starship"
 
 # Interactive tools wired into fish
 brew "zoxide"   # smart cd
-brew "fzf"      # Ctrl+R, Ctrl+T, Alt+C, Shift+Down
+brew "fzf"      # fzf.fish searches (Ctrl+R, Ctrl+Alt+F/L/S/P/V), Shift+Down
+brew "fd"       # file listing for fzf.fish (Ctrl+Alt+F)
 brew "eza"      # ls, ll, la, tree
 brew "bat"      # cat, Ctrl+R preview
 brew "ripgrep"  # grep
@@ -21,10 +22,14 @@ brew "mise"
 tap "zstud/reef"
 brew "zstud/reef/reef"
 
+# fish plugins listed in ~/.config/fish/fish_plugins (fzf.fish is only supported through Fisher)
+brew "fisher"
+
 # This repository
 brew "chezmoi"
 
 if OS.mac?
+  cask "ghostty"
   cask "iterm2"
   cask "font-fira-code-nerd-font" # prompt icons ("fish" iTerm profile)
 end

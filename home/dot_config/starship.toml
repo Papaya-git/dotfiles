@@ -1,84 +1,199 @@
-# Starship prompt, modelled on powerlevel10k classic (2 lines, Nerd Font icons).
-# Line 1: os, directory, git  ...  status, duration, jobs, cloud contexts, time
-# Line 2: input character
-# Everything fits in a single starship call (no right_format: +9 ms per prompt).
+# Starship prompt, One Dark palette (same as Ghostty, fish, bat and fzf).
+# Line 1: where you are on the left, the context on the right ($fill pushes it there);
+# line 2: the input. One Starship call per prompt: no right_format (see conf.d/10-tools.fish).
+# Chain of coloured groups, / slants between, rounded ends:
+# machine, folder, git, environment | cloud, tools, time.
+# Groups that may be empty (git, environment, tools) sit in ( ), so Starship drops them with their
+# separator, which takes its colour from what comes before it (prev_bg): no empty sliver.
+# Icons are written as \u escapes: Nerd Font characters can be lost when the file is edited.
+# Previous prompts: themes/classic.toml (p10k style), themes/*.toml (prompt-theme).
+#
+# Language versions: not Starship's modules (each runs `<tool> --version` on every prompt through
+# the mise shims: node +137 ms, go +50 to +508 ms) but PROMPT_TOOLS, the versions declared for
+# mise, read by fish on directory change (conf.d/20-prompt-tools.fish): no cost per prompt.
 
-add_newline = true
+palette = "one_dark"
 format = """
-$os$directory$git_branch$git_state$git_status\
+[\ue0b6](red)\
+$os$username$hostname$container\
+[\ue0bc](fg:red bg:orange)\
+$directory\
+([\ue0bc](fg:prev_bg bg:yellow)$git_branch$git_status$git_state$git_metrics)\
+([\ue0bc](fg:prev_bg bg:green)$python$terraform$direnv)\
+[\ue0b4](fg:prev_bg)\
 $fill\
-$status$cmd_duration$jobs$gcloud$kubernetes$aws$terraform$python$time
+$status$cmd_duration$jobs$sudo$shlvl\
+[\ue0b6](fg:cyan)\
+$gcloud$kubernetes$aws\
+([\ue0be](fg:purple bg:prev_bg)${env_var.PROMPT_TOOLS}$package)\
+[\ue0be](fg:blue bg:prev_bg)\
+$time\
+[\ue0b4](fg:blue)
 $character"""
 
 [fill]
 symbol = " "
 
+# --- Machine (red) -----------------------------------------------------------------------------
 [os]
 disabled = false
-format = "[$symbol]($style)"
-style = "bold white"
+format = "[ $symbol]($style)"
+style = "fg:base bg:red"
 
 [os.symbols]
-Macos = " "
+Macos = "\U000f0035 "
+Linux = "\U000f033d "
+Ubuntu = "\U000f0548 "
+Debian = "\U000f08da "
+Fedora = "\U000f08db "
 
+# user@host: over SSH only (and as root)
+[username]
+format = "[ $user]($style)"
+style_user = "fg:base bg:red"
+style_root = "bold fg:base bg:red"
+
+[hostname]
+ssh_only = true
+format = "[@$hostname ]($style)"
+style = "fg:base bg:red"
+
+[container]
+format = "[ \uf4b7 $name ]($style)"
+style = "fg:base bg:red"
+
+# --- Folder (orange) ---------------------------------------------------------------------------
 [directory]
+format = "[ $path$read_only ]($style)"
+style = "fg:base bg:orange"
+read_only = " \U000f033e"
+read_only_style = "fg:base bg:orange"
 truncation_length = 4
 truncate_to_repo = false
-read_only = " \U000f033e"
-style = "bold cyan"
+truncation_symbol = "…/"
 
+# --- Git (yellow) ------------------------------------------------------------------------------
 [git_branch]
-symbol = " "
-format = "[$symbol$branch(:$remote_branch)]($style) "
+symbol = "\U000f062c"
+format = "[ $symbol $branch ](fg:base bg:yellow)"
 
+# Counts (!2 ?1 ⇣3). ✓ = in sync with the upstream branch (Starship has no "clean worktree" state).
 [git_status]
-format = "([$all_status$ahead_behind]($style) )"
+format = "([$all_status$ahead_behind](fg:base bg:yellow))"
+conflicted = "=${count} "
+stashed = "\\$${count} "
+deleted = "✘${count} "
+renamed = "»${count} "
+modified = "!${count} "
+staged = "+${count} "
+untracked = "?${count} "
+ahead = "⇡${count} "
+behind = "⇣${count} "
+diverged = "⇕⇡${ahead_count}⇣${behind_count} "
+up_to_date = "✓ "
 # The git binary (direct, see conf.d/00-env.fish) is much faster than Starship's built-in
 # library here: 29 ms vs 50 ms for the whole prompt (measured on a mid-sized repo).
 use_git_executable = true
 
+[git_state]
+format = "[$state( $progress_current/$progress_total) ](fg:base bg:yellow)"
+
+[git_metrics]
+disabled = false
+format = "([+$added ]($added_style))([−$deleted ]($deleted_style))"
+added_style = "fg:base bg:yellow"
+deleted_style = "fg:base bg:yellow"
+
+# --- Environment (green) -----------------------------------------------------------------------
+# Python: only when a virtual environment is active
+[python]
+symbol = "\ue606"
+detect_extensions = []
+detect_files = []
+format = "[ $symbol $virtualenv ](fg:base bg:green)"
+
+[terraform]
+symbol = "\U000f1062"
+format = "[ $symbol $workspace ](fg:base bg:green)"
+
+[direnv]
+disabled = false
+format = "[ $symbol$loaded ](fg:base bg:green)"
+symbol = "\uf462 "
+loaded_msg = "loaded"
+unloaded_msg = ""
+
+# --- State, plain text before the right-hand chain ---------------------------------------------
 [status]
 disabled = false
-format = "[✘ $status]($style) "
+format = "[✘ $status( $signal_name)](bold fg:red) "
 
-# Duration shown above 3 s, without decimals (like p10k)
+# Duration shown above 1 s
 [cmd_duration]
-min_time = 3000
+min_time = 1000
 show_milliseconds = false
-format = "[took $duration]($style) "
+format = "[\uf252 $duration](fg:comment) "
 
 [jobs]
-format = "[$symbol$number]($style) "
+symbol = "✦"
+format = "[$symbol$number](fg:yellow) "
 
+[sudo]
+disabled = false
+format = "[$symbol](fg:yellow) "
+symbol = "\U000f0483 sudo"
+
+# Nested shell: from 2 levels
+[shlvl]
+disabled = false
+threshold = 2
+format = "[$symbol$shlvl](fg:comment) "
+symbol = "\uf120 "
+
+# --- Cloud (cyan) ------------------------------------------------------------------------------
 # gcloud: project only
 [gcloud]
-symbol = "\U000f11f6 "
-format = "[$symbol$project]($style) "
+symbol = "\U000f11f6"
+format = "[ $symbol $project ](fg:base bg:cyan)"
 
 [kubernetes]
 disabled = false
-symbol = "\U000f10fe "
+symbol = "\U000f10fe"
+format = "[ $symbol $context( \\($namespace\\)) ](fg:base bg:cyan)"
 
 [aws]
-symbol = " "
+symbol = "\ue7ad"
+format = "[ $symbol $profile ](fg:base bg:cyan)"
 
-[terraform]
-symbol = " "
-format = "[$symbol$workspace]($style) "
+# --- Tools (purple) ----------------------------------------------------------------------------
+# Versions declared for mise (node, go, python, terraform…), see conf.d/20-prompt-tools.fish
+[env_var.PROMPT_TOOLS]
+variable = "PROMPT_TOOLS"
+format = "[ $env_value ](fg:base bg:purple)"
 
-# Python: only when a virtual environment is active (like p10k's virtualenv segment)
-[python]
-symbol = " "
-detect_extensions = []
-detect_files = []
-format = "[$symbol$virtualenv]($style) "
+# Private packages too (display_private): most project package.json are private.
+[package]
+display_private = true
+symbol = "\U000f03d7"
+format = "[ $symbol $version ](fg:base bg:purple)"
 
+# --- Time (blue) -------------------------------------------------------------------------------
 [time]
 disabled = false
-time_format = "%H:%M:%S"
-format = "[$time]($style)"
-style = "dimmed white"
+time_format = "%R"
+format = "[ \uf43a $time ](fg:base bg:blue)"
 
 [character]
-success_symbol = "[❯](bold green)"
-error_symbol = "[❯](bold red)"
+success_symbol = "[›](bold fg:green)"
+error_symbol = "[›](bold fg:red)"
+
+[palettes.one_dark]
+red = "#e06c75"
+orange = "#d19a66"
+yellow = "#e5c07b"
+green = "#98c379"
+cyan = "#56b6c2"
+purple = "#c678dd"
+blue = "#61afef"
+base = "#282c34"
+comment = "#5c6370"

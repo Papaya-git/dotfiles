@@ -1,0 +1,37 @@
+# Minimal, Pure style: directory, branch and duration, nothing else unless it matters.
+# Terminal colours only (ANSI), so it reads the same on a dark or a light background.
+add_newline = true
+format = """
+$directory$git_branch$git_state$git_status$cmd_duration$fill$gcloud$kubernetes
+$character"""
+
+[fill]
+symbol = " "
+
+[directory]
+truncation_length = 4
+truncate_to_repo = false
+style = "blue"
+
+[git_branch]
+format = "[$branch](bright-black) "
+
+[git_status]
+format = "([$all_status$ahead_behind](cyan) )"
+use_git_executable = true
+
+[cmd_duration]
+min_time = 3000
+show_milliseconds = false
+format = "[$duration](yellow) "
+
+[gcloud]
+format = "[$project](bright-black) "
+
+[kubernetes]
+disabled = false
+format = "[$context](bright-black)"
+
+[character]
+success_symbol = "[❯](purple)"
+error_symbol = "[❯](red)"

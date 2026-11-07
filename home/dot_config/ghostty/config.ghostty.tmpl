@@ -1,0 +1,35 @@
+# Ghostty: https://ghostty.org/docs/config (all options: ghostty +show-config --default --docs)
+
+# fish runs here, the login shell stays the system default (see the README).
+{{- if eq .chezmoi.os "darwin" }}
+command = /opt/homebrew/bin/fish --login
+{{- else }}
+command = /home/linuxbrew/.linuxbrew/bin/fish --login
+{{- end }}
+
+font-family = FiraCode Nerd Font Mono
+font-size = 17
+
+# Same palette as the prompt, fish, bat and fzf (One Dark), on a near-black background with a
+# hint of blue instead of the theme's own (#282c34).
+theme = Atom One Dark
+background = #111114
+# Translucent, blurred background. Opacity only changes after quitting Ghostty (Cmd+Q).
+# On macOS 26+, `background-blur = macos-glass-regular` uses the system glass effect instead.
+background-opacity = 0.85
+background-blur = 30
+
+# Option sends Alt (fish bindings: Alt+O, Alt+C, Ctrl+Alt+F…).
+macos-option-as-alt = true
+
+# Ctrl+C copies when text is selected, otherwise it reaches the shell (interrupt).
+keybind = performable:ctrl+c=copy_to_clipboard
+# Ctrl+V pastes, like Cmd+V.
+keybind = ctrl+v=paste_from_clipboard
+
+# Shift+arrows extend a selection when there is one, otherwise they reach fish
+# (previous/next directory, cd .., subdirectory picker).
+keybind = performable:shift+arrow_left=adjust_selection:left
+keybind = performable:shift+arrow_right=adjust_selection:right
+keybind = performable:shift+arrow_up=adjust_selection:up
+keybind = performable:shift+arrow_down=adjust_selection:down

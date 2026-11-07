@@ -1,0 +1,71 @@
+# Jetpack layout: what you type on the left, the context on the right, on one line.
+# Nerd Font icons instead of Jetpack's geometric symbols.
+add_newline = true
+continuation_prompt = "[▸ ](dimmed white)"
+format = "$status$cmd_duration$jobs$character"
+right_format = "$os$directory$git_branch$git_state$git_status$gcloud$kubernetes$aws$terraform$python$time"
+
+[os]
+disabled = false
+format = "[$symbol]($style)"
+style = "bold white"
+
+[os.symbols]
+Macos = " "
+
+[directory]
+truncation_length = 3
+truncate_to_repo = false
+read_only = " \U000f033e"
+style = "bold cyan"
+
+[git_branch]
+symbol = " "
+format = "[$symbol$branch]($style) "
+
+[git_status]
+format = "([$all_status$ahead_behind]($style) )"
+use_git_executable = true
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+[status]
+disabled = false
+format = "[✘ $status]($style) "
+
+[cmd_duration]
+min_time = 3000
+show_milliseconds = false
+format = "[took $duration]($style) "
+
+[jobs]
+format = "[$symbol$number]($style) "
+
+[gcloud]
+symbol = "\U000f11f6 "
+format = "[$symbol$project]($style) "
+
+[kubernetes]
+disabled = false
+symbol = "\U000f10fe "
+
+[aws]
+symbol = " "
+
+[terraform]
+symbol = "\U000f1062 "
+format = "[$symbol$workspace]($style) "
+
+[python]
+symbol = " "
+detect_extensions = []
+detect_files = []
+format = "[$symbol$virtualenv]($style) "
+
+[time]
+disabled = false
+time_format = "%H:%M:%S"
+format = "[$time]($style)"
+style = "dimmed white"

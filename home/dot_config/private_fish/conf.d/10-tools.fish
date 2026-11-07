@@ -1,4 +1,4 @@
-# Interactive tools: zoxide, fzf, Starship.
+# Interactive tools: zoxide, Starship, fzf colours (fzf itself is wired by fzf.fish, see fish_plugins).
 # Their init scripts are cached in ~/.cache/fish-init (otherwise each one starts its program
 # on every shell: ~30 ms in total). Regenerated automatically when one of them changes
 # version (brew upgrade); by hand: `fish-init-refresh`.
@@ -10,19 +10,38 @@ set -l key (__fish_init_key)
 if test "$key" != "$__fish_init_key"; or not test -f $cache/starship.fish
     fish-init-refresh
 end
-for script in zoxide fzf starship
-    # zoxide: smart cd + cdi; fzf: Ctrl+R, Ctrl+T, Alt+C; starship: the prompt
+for script in zoxide starship
+    # zoxide: smart cd + cdi; starship: the prompt
     test -f $cache/$script.fish; and source $cache/$script.fish
 end
+
+# Starship's init always defines fish_right_prompt, which starts Starship a second time on every
+# prompt (~10 ms) even when the theme has no right_format. Kept only for a theme that has one,
+# checked again whenever prompt-theme changes STARSHIP_CONFIG (in every open shell).
+functions -q fish_right_prompt; and functions -c fish_right_prompt __starship_right_prompt
+function __starship_right_prompt_sync --on-variable STARSHIP_CONFIG
+    set -l config $HOME/.config/starship.toml
+    set -q STARSHIP_CONFIG; and set config $STARSHIP_CONFIG
+    if functions -q __starship_right_prompt; and string match -qr '^right_format' <$config
+        functions -c __starship_right_prompt fish_right_prompt 2>/dev/null
+    else
+        functions -e fish_right_prompt
+    end
+end
+__starship_right_prompt_sync
 
 # Transient prompt: once run, a command line keeps only a "❯".
 # Fixed text, so starship does not run again on every Enter.
 function starship_transient_prompt_func
-    set_color green; echo -n '❯ '; set_color normal
+    # Start time of the command, then the input character (One Dark grey and green).
+    set_color 5c6370; echo -n (date +%H:%M)' '; set_color 98c379; echo -n '› '; set_color normal
 end
 enable_transience
 
-# bat preview in Ctrl+R
-set -gx FZF_CTRL_R_OPTS "--preview 'echo {} | bat --color=always --language=sh --style=plain' --preview-window=down:6:wrap"
+# fzf colours: One Dark, without a background so the terminal's shows.
+set -gx FZF_DEFAULT_OPTS "--color=fg:#abb2bf,fg+:#abb2bf,bg+:#3e4451,hl:#e5c07b,hl+:#e5c07b,info:#5c6370,prompt:#c678dd,pointer:#61afef,marker:#98c379,spinner:#c678dd,header:#56b6c2,border:#5c6370,label:#abb2bf,selected-bg:#3e4451"
+
+# fzf.fish Ctrl+Alt+F: hidden files included, .git left out.
+set -g fzf_fd_opts --hidden --exclude .git
 
 # zsh's glob_dots has no fish equivalent: `*` always skips hidden files. To include them: {.,}*
