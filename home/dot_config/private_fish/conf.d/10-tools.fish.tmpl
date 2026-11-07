@@ -38,8 +38,9 @@ function starship_transient_prompt_func
 end
 enable_transience
 
-# fzf colours: One Dark, without a background so the terminal's shows.
-set -gx FZF_DEFAULT_OPTS "--color=fg:#abb2bf,fg+:#abb2bf,bg+:#3e4451,hl:#e5c07b,hl+:#e5c07b,info:#5c6370,prompt:#c678dd,pointer:#61afef,marker:#98c379,spinner:#c678dd,header:#56b6c2,border:#5c6370,label:#abb2bf,selected-bg:#3e4451"
+# fzf colours of the current theme (`theme`, see .chezmoidata.toml), without a background so the
+# terminal's shows.
+set -gx FZF_DEFAULT_OPTS "{{ (index .themes .theme).fzf }}"
 
 # fzf.fish Ctrl+Alt+F: hidden files included, .git left out.
 set -g fzf_fd_opts --hidden --exclude .git

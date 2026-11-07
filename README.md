@@ -36,7 +36,8 @@ fish only runs where you type (Ghostty, iTerm, the editor's terminal).
 | See the differences | `chezmoi diff` |
 | Pull changes made on another machine | `chezmoi update` |
 | Commit and push | `chezmoi cd`, then git |
-| Try another prompt theme | `prompt-theme` (list), `prompt-theme <name>`, `prompt-theme default` |
+| Switch the colour theme (prompt, Ghostty, fish, bat, fzf) | `theme` (list), `theme mocha-muted`, `theme one-dark`; then Cmd+Shift+, in Ghostty |
+| Try another prompt layout | `prompt-theme` (list), `prompt-theme <name>`, `prompt-theme default` |
 | Add or remove a fish plugin | edit `~/.config/fish/fish_plugins`, then `chezmoi apply` |
 
 ## Contents
@@ -46,7 +47,8 @@ fish only runs where you type (Ghostty, iTerm, the editor's terminal).
 | `~/.config/fish/conf.d/` | environment, tools (zoxide, Starship), tool versions for the prompt, reef, abbreviations, key bindings |
 | `~/.config/fish/functions/`, `completions/` | custom functions, one per file |
 | `~/.config/fish/fish_plugins` | Fisher plugins (fzf.fish), installed by `fisher update` whenever the list changes |
-| `~/.config/starship.toml` | prompt |
+| `~/.config/starship.toml` | prompt, one palette per colour theme |
+| `.chezmoidata.toml` (repository) | colour themes: Ghostty, bat, fish and fzf colours for each; the chosen one is kept in `~/.config/chezmoi/chezmoi.toml` |
 | `~/.config/starship/themes/` | other prompt themes, picked with `prompt-theme` |
 | `~/.config/ghostty/config.ghostty` | terminal: fish, Nerd Font, Catppuccin theme, Option as Alt, Ctrl+C/Ctrl+V copy and paste |
 | `~/.Brewfile` | packages, installed by `brew bundle --global --no-upgrade` whenever it changes |

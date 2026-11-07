@@ -1,10 +1,11 @@
 #!/bin/bash
 # fish colours (command line, suggestions, Tab menu): saved once in universal variables,
 # so nothing is loaded at startup. Runs again when the theme file changes.
+# Theme: {{ .theme }}
 # one-dark.theme: {{ include "dot_config/private_fish/themes/one-dark.theme" | sha256sum }}
 set -euo pipefail
 
 command -v fish >/dev/null 2>&1 || { echo "fish is missing: run 'chezmoi apply' again once the Brewfile is installed." >&2; exit 1; }
 
 # fish asks before overwriting the current theme.
-echo y | fish -c 'fish_config theme save one-dark --color-theme=dark'
+echo y | fish -c 'fish_config theme save {{ (index .themes .theme).fish }} --color-theme=dark'

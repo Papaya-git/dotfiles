@@ -12,33 +12,34 @@
 # the mise shims: node +137 ms, go +50 to +508 ms) but PROMPT_TOOLS, the versions declared for
 # mise, read by fish on directory change (conf.d/20-prompt-tools.fish): no cost per prompt.
 
-palette = "one_dark"
+# Theme chosen with the `theme` fish function (chezmoi data, see .chezmoidata.toml).
+palette = "{{ .theme }}"
 format = """
-[\ue0b6](red)\
+[\ue0b6](machine)\
 $os$username$hostname$container\
-[\ue0bc](fg:red bg:orange)\
+[\ue0bc](fg:machine bg:folder)\
 $directory\
-([\ue0bc](fg:prev_bg bg:yellow)$git_branch$git_status$git_state$git_metrics)\
-([\ue0bc](fg:prev_bg bg:green)$python$terraform$direnv)\
+([\ue0bc](fg:prev_bg bg:git)$git_branch$git_status$git_state$git_metrics)\
+([\ue0bc](fg:prev_bg bg:env)$python$terraform$direnv)\
 [\ue0b4](fg:prev_bg)\
 $fill\
 $status$cmd_duration$jobs$sudo$shlvl\
-[\ue0b6](fg:cyan)\
+[\ue0b6](fg:cloud)\
 $gcloud$kubernetes$aws\
-([\ue0be](fg:purple bg:prev_bg)${env_var.PROMPT_TOOLS}$package)\
-[\ue0be](fg:blue bg:prev_bg)\
+([\ue0be](fg:tools bg:prev_bg)${env_var.PROMPT_TOOLS}$package)\
+[\ue0be](fg:time bg:prev_bg)\
 $time\
-[\ue0b4](fg:blue)
+[\ue0b4](fg:time)
 $character"""
 
 [fill]
 symbol = " "
 
-# --- Machine (red) -----------------------------------------------------------------------------
+# --- Machine -----------------------------------------------------------------------------------
 [os]
 disabled = false
 format = "[ $symbol]($style)"
-style = "fg:base bg:red"
+style = "fg:machine_fg bg:machine"
 
 [os.symbols]
 Macos = "\U000f0035 "
@@ -50,36 +51,36 @@ Fedora = "\U000f08db "
 # user@host: over SSH only (and as root)
 [username]
 format = "[ $user]($style)"
-style_user = "fg:base bg:red"
-style_root = "bold fg:base bg:red"
+style_user = "fg:machine_fg bg:machine"
+style_root = "bold fg:machine_fg bg:machine"
 
 [hostname]
 ssh_only = true
 format = "[@$hostname ]($style)"
-style = "fg:base bg:red"
+style = "fg:machine_fg bg:machine"
 
 [container]
 format = "[ \uf4b7 $name ]($style)"
-style = "fg:base bg:red"
+style = "fg:machine_fg bg:machine"
 
-# --- Folder (orange) ---------------------------------------------------------------------------
+# --- Folder ------------------------------------------------------------------------------------
 [directory]
 format = "[ $path$read_only ]($style)"
-style = "fg:base bg:orange"
+style = "fg:folder_fg bg:folder"
 read_only = " \U000f033e"
-read_only_style = "fg:base bg:orange"
+read_only_style = "fg:folder_fg bg:folder"
 truncation_length = 4
 truncate_to_repo = false
 truncation_symbol = "…/"
 
-# --- Git (yellow) ------------------------------------------------------------------------------
+# --- Git ---------------------------------------------------------------------------------------
 [git_branch]
 symbol = "\U000f062c"
-format = "[ $symbol $branch ](fg:base bg:yellow)"
+format = "[ $symbol $branch ](fg:git_fg bg:git)"
 
 # Counts (!2 ?1 ⇣3). ✓ = in sync with the upstream branch (Starship has no "clean worktree" state).
 [git_status]
-format = "([$all_status$ahead_behind](fg:base bg:yellow))"
+format = "([$all_status$ahead_behind](fg:git_fg bg:git))"
 conflicted = "=${count} "
 stashed = "\\$${count} "
 deleted = "✘${count} "
@@ -96,29 +97,29 @@ up_to_date = "✓ "
 use_git_executable = true
 
 [git_state]
-format = "[$state( $progress_current/$progress_total) ](fg:base bg:yellow)"
+format = "[$state( $progress_current/$progress_total) ](fg:git_fg bg:git)"
 
 [git_metrics]
 disabled = false
 format = "([+$added ]($added_style))([−$deleted ]($deleted_style))"
-added_style = "fg:base bg:yellow"
-deleted_style = "fg:base bg:yellow"
+added_style = "fg:git_fg bg:git"
+deleted_style = "fg:git_fg bg:git"
 
-# --- Environment (green) -----------------------------------------------------------------------
+# --- Environment -------------------------------------------------------------------------------
 # Python: only when a virtual environment is active
 [python]
 symbol = "\ue606"
 detect_extensions = []
 detect_files = []
-format = "[ $symbol $virtualenv ](fg:base bg:green)"
+format = "[ $symbol $virtualenv ](fg:env_fg bg:env)"
 
 [terraform]
 symbol = "\U000f1062"
-format = "[ $symbol $workspace ](fg:base bg:green)"
+format = "[ $symbol $workspace ](fg:env_fg bg:env)"
 
 [direnv]
 disabled = false
-format = "[ $symbol$loaded ](fg:base bg:green)"
+format = "[ $symbol$loaded ](fg:env_fg bg:env)"
 symbol = "\uf462 "
 loaded_msg = "loaded"
 unloaded_msg = ""
@@ -126,74 +127,106 @@ unloaded_msg = ""
 # --- State, plain text before the right-hand chain ---------------------------------------------
 [status]
 disabled = false
-format = "[✘ $status( $signal_name)](bold fg:red) "
+format = "[✘ $status( $signal_name)](bold fg:error) "
 
 # Duration shown above 1 s
 [cmd_duration]
 min_time = 1000
 show_milliseconds = false
-format = "[\uf252 $duration](fg:comment) "
+format = "[\uf252 $duration](fg:muted) "
 
 [jobs]
 symbol = "✦"
-format = "[$symbol$number](fg:yellow) "
+format = "[$symbol$number](fg:warning) "
 
 [sudo]
 disabled = false
-format = "[$symbol](fg:yellow) "
+format = "[$symbol](fg:warning) "
 symbol = "\U000f0483 sudo"
 
 # Nested shell: from 2 levels
 [shlvl]
 disabled = false
 threshold = 2
-format = "[$symbol$shlvl](fg:comment) "
+format = "[$symbol$shlvl](fg:muted) "
 symbol = "\uf120 "
 
-# --- Cloud (cyan) ------------------------------------------------------------------------------
+# --- Cloud -------------------------------------------------------------------------------------
 # gcloud: project only
 [gcloud]
 symbol = "\U000f11f6"
-format = "[ $symbol $project ](fg:base bg:cyan)"
+format = "[ $symbol $project ](fg:cloud_fg bg:cloud)"
 
 [kubernetes]
 disabled = false
 symbol = "\U000f10fe"
-format = "[ $symbol $context( \\($namespace\\)) ](fg:base bg:cyan)"
+format = "[ $symbol $context( \\($namespace\\)) ](fg:cloud_fg bg:cloud)"
 
 [aws]
 symbol = "\ue7ad"
-format = "[ $symbol $profile ](fg:base bg:cyan)"
+format = "[ $symbol $profile ](fg:cloud_fg bg:cloud)"
 
-# --- Tools (purple) ----------------------------------------------------------------------------
+# --- Tools -------------------------------------------------------------------------------------
 # Versions declared for mise (node, go, python, terraform…), see conf.d/20-prompt-tools.fish
 [env_var.PROMPT_TOOLS]
 variable = "PROMPT_TOOLS"
-format = "[ $env_value ](fg:base bg:purple)"
+format = "[ $env_value ](fg:tools_fg bg:tools)"
 
 # Private packages too (display_private): most project package.json are private.
 [package]
 display_private = true
 symbol = "\U000f03d7"
-format = "[ $symbol $version ](fg:base bg:purple)"
+format = "[ $symbol $version ](fg:tools_fg bg:tools)"
 
-# --- Time (blue) -------------------------------------------------------------------------------
+# --- Time --------------------------------------------------------------------------------------
 [time]
 disabled = false
 time_format = "%R"
-format = "[ \uf43a $time ](fg:base bg:blue)"
+format = "[ \uf43a $time ](fg:time_fg bg:time)"
 
 [character]
-success_symbol = "[›](bold fg:green)"
-error_symbol = "[›](bold fg:red)"
+success_symbol = "[›](bold fg:ok)"
+error_symbol = "[›](bold fg:error)"
 
-[palettes.one_dark]
-red = "#e06c75"
-orange = "#d19a66"
-yellow = "#e5c07b"
-green = "#98c379"
-cyan = "#56b6c2"
-purple = "#c678dd"
-blue = "#61afef"
-base = "#282c34"
-comment = "#5c6370"
+# One palette per theme, by role: <group> is the segment background, <group>_fg its text.
+[palettes.one-dark]
+machine = "#e06c75"
+folder = "#d19a66"
+git = "#e5c07b"
+env = "#98c379"
+cloud = "#56b6c2"
+tools = "#c678dd"
+time = "#61afef"
+machine_fg = "#282c34"
+folder_fg = "#282c34"
+git_fg = "#282c34"
+env_fg = "#282c34"
+cloud_fg = "#282c34"
+tools_fg = "#282c34"
+time_fg = "#282c34"
+error = "#e06c75"
+warning = "#e5c07b"
+ok = "#98c379"
+muted = "#5c6370"
+
+# Catppuccin Mocha, muted backgrounds: three surface greys in turn (neighbouring groups always
+# differ, whichever optional group is missing) and the accent colour on the text.
+[palettes.mocha-muted]
+machine = "#313244"
+folder = "#45475a"
+git = "#585b70"
+env = "#313244"
+cloud = "#313244"
+tools = "#45475a"
+time = "#585b70"
+machine_fg = "#f38ba8"
+folder_fg = "#fab387"
+git_fg = "#f9e2af"
+env_fg = "#a6e3a1"
+cloud_fg = "#74c7ec"
+tools_fg = "#cba6f7"
+time_fg = "#b4befe"
+error = "#f38ba8"
+warning = "#f9e2af"
+ok = "#a6e3a1"
+muted = "#7f849c"

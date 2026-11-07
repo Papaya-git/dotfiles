@@ -1,0 +1,16 @@
+# Colour themes, switched with the `theme` fish function. It writes the chosen one in
+# ~/.config/chezmoi/chezmoi.toml ([data] theme = "…"), which takes precedence over the default
+# below, then runs `chezmoi apply`. Starship palettes: starship.toml.tmpl ([palettes.<theme>]).
+theme = "one-dark"
+
+[themes.one-dark]
+ghostty = "Atom One Dark"
+bat = "OneHalfDark"
+fish = "one-dark"
+fzf = "--color=fg:#abb2bf,fg+:#abb2bf,bg+:#3e4451,hl:#e5c07b,hl+:#e5c07b,info:#5c6370,prompt:#c678dd,pointer:#61afef,marker:#98c379,spinner:#c678dd,header:#56b6c2,border:#5c6370,label:#abb2bf,selected-bg:#3e4451"
+
+[themes.mocha-muted]
+ghostty = "Catppuccin Mocha"
+bat = "Catppuccin Mocha"
+fish = "catppuccin-mocha"
+fzf = "--color=bg+:#313244,spinner:#f5e0dc,hl:#f38ba8,fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc,marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8,selected-bg:#45475a,border:#6c7086,label:#cdd6f4"

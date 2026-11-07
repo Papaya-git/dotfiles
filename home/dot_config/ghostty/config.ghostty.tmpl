@@ -10,9 +10,9 @@ command = /home/linuxbrew/.linuxbrew/bin/fish --login
 font-family = FiraCode Nerd Font Mono
 font-size = 17
 
-# Same palette as the prompt, fish, bat and fzf (One Dark), on a near-black background with a
-# hint of blue instead of the theme's own (#282c34).
-theme = Atom One Dark
+# Same palette as the prompt, fish, bat and fzf (`theme`), on a near-black background with a
+# hint of blue instead of the theme's own.
+theme = {{ (index .themes .theme).ghostty }}
 background = #111114
 # Translucent, blurred background. Opacity only changes after quitting Ghostty (Cmd+Q).
 # On macOS 26+, `background-blur = macos-glass-regular` uses the system glass effect instead.
