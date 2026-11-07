@@ -18,13 +18,12 @@ tools wired into them, installed from a Brewfile.
    chezmoi apply    # write the files, then install the Brewfile
    ```
 
-4. macOS: Ghostty is the terminal (fish, font, theme and keys are set in its config). iTerm stays
-   installed: in *Settings > Profiles*, make the **fish** profile the default one.
+4. macOS: Ghostty is the terminal (fish, font, theme and keys are set in its config).
    VS Code and Antigravity: add a fish terminal profile (`/opt/homebrew/bin/fish --login`) and
    set `terminal.integrated.macOptionIsMeta: true`.
 
 The login shell stays the system default: tools and agents expect a POSIX shell there.
-fish only runs where you type (Ghostty, iTerm, the editor's terminal).
+fish only runs where you type (Ghostty, the editor's terminal).
 
 ## Day to day
 
@@ -53,7 +52,6 @@ fish only runs where you type (Ghostty, iTerm, the editor's terminal).
 | `~/.config/ghostty/config.ghostty` | terminal: fish, Nerd Font, Catppuccin theme, Option as Alt, Ctrl+C/Ctrl+V copy and paste |
 | `~/.Brewfile` | packages, installed by `brew bundle --global --no-upgrade` whenever it changes |
 | `~/.local/share/fish-git/bin/git` | macOS: link to the CommandLineTools git (twice as fast as `/usr/bin/git`) |
-| `~/Library/…/DynamicProfiles/fish.json` | macOS: iTerm profile (Option sends Alt, Nerd Font) |
 
 Deliberately left out: `~/.config/fish/config.fish` (installers append their own lines there;
 machine-specific settings go there too), `fish_variables` (machine state), shell history,
@@ -62,6 +60,6 @@ machine-specific settings go there too), `fish_variables` (machine state), shell
 ## Linux
 
 The fish files look for Homebrew under `/opt/homebrew` or `/home/linuxbrew/.linuxbrew`.
-The iTerm profile and the git link are not written outside macOS (`.chezmoiignore`).
+The git link is not written outside macOS (`.chezmoiignore`).
 Without Homebrew (apt or dnf packages), the init cache cannot see version changes:
 run `fish-init-refresh` after upgrading zoxide or Starship.

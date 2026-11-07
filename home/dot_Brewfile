@@ -30,6 +30,5 @@ brew "chezmoi"
 
 if OS.mac?
   cask "ghostty"
-  cask "iterm2"
-  cask "font-fira-code-nerd-font" # prompt icons ("fish" iTerm profile)
+  cask "font-fira-code-nerd-font" # prompt icons (Ghostty)
 end

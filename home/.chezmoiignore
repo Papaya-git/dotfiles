@@ -1,5 +1,4 @@
-{{- /* macOS only: iTerm profile and the link to the CommandLineTools git. */ -}}
+{{- /* macOS only: the link to the CommandLineTools git. */ -}}
 {{ if ne .chezmoi.os "darwin" }}
-Library
 .local/share/fish-git
 {{ end }}

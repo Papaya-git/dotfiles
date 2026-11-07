@@ -1,8 +1,7 @@
 # Key bindings. Already provided by fish and not redefined here:
 # Ctrl+/ undo, Alt+/ redo, Alt+Left/Right previous/next directory, Up history search.
-# Option sends Alt through the terminal settings: iTerm ("fish" profile: Esc+, and "Apps can
-# change how keys are reported" unchecked, otherwise fish 4.9 inserts the Option character),
-# VS Code and Antigravity (terminal.integrated.macOptionIsMeta).
+# Option sends Alt through the terminal settings: Ghostty (macos-option-as-alt), VS Code and
+# Antigravity (terminal.integrated.macOptionIsMeta).
 
 status is-interactive; or return
 
