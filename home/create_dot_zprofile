@@ -1,0 +1,3 @@
+# Created once by chezmoi, then left to this machine: installers append their lines here.
+# Login shells: macOS /etc/zprofile (path_helper) has put the system paths first; restore the order.
+source $HOME/.config/zsh/env.zsh

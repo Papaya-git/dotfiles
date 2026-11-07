@@ -22,8 +22,11 @@ tools wired into them, installed from a Brewfile.
    VS Code and Antigravity: add a fish terminal profile (`/opt/homebrew/bin/fish --login`) and
    set `terminal.integrated.macOptionIsMeta: true`.
 
-The login shell stays the system default: tools and agents expect a POSIX shell there.
-fish only runs where you type (Ghostty, the editor's terminal).
+The login shell stays zsh: tools and AI agents expect a POSIX shell there (Claude Code runs
+bash or zsh, not fish). fish only runs where you type (Ghostty, the editor's terminal). The zsh
+configuration is deliberately bare: the same PATH as fish, no alias, no plugin, no framework, so
+commands behave as documented; under an agent (`CLAUDECODE`, `ANTIGRAVITY_AGENT`) no pager and
+no Homebrew auto-update.
 
 ## Day to day
 
@@ -49,7 +52,10 @@ fish only runs where you type (Ghostty, the editor's terminal).
 | `~/.config/starship.toml` | prompt, one palette per colour theme |
 | `.chezmoidata.toml` (repository) | colour themes: Ghostty, bat, fish and fzf colours for each; the chosen one is kept in `~/.config/chezmoi/chezmoi.toml` |
 | `~/.config/starship/themes/` | other prompt themes, picked with `prompt-theme` |
-| `~/.config/ghostty/config.ghostty` | terminal: fish, Nerd Font, Catppuccin theme, Option as Alt, Ctrl+C/Ctrl+V copy and paste |
+| `~/.config/ghostty/config.ghostty` | terminal: fish, Nerd Font, colour theme, Option as Alt, Ctrl+C/Ctrl+V copy and paste |
+| `~/.config/zsh/env.zsh` | environment of every zsh (scripts, agents): PATH, Homebrew; machine-specific lines in `~/.config/zsh/local.zsh` |
+| `~/.config/zsh/rc.zsh` | interactive zsh: history, completion, plain prompt |
+| `~/.zshenv`, `~/.zprofile`, `~/.zshrc` | created once, each sourcing the files above; installers append their lines there |
 | `~/.Brewfile` | packages, installed by `brew bundle --global --no-upgrade` whenever it changes |
 | `~/.local/share/fish-git/bin/git` | macOS: link to the CommandLineTools git (twice as fast as `/usr/bin/git`) |
 

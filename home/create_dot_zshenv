@@ -1,0 +1,3 @@
+# Created once by chezmoi, then left to this machine: installers append their lines here.
+# The managed environment is in ~/.config/zsh/env.zsh.
+source $HOME/.config/zsh/env.zsh
